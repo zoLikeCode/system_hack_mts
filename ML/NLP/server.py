@@ -5,52 +5,22 @@ import vosk
 
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
+from config import MODEL_PATH, SAMPLE_RATE
+import uvicorn
 
 # Путь к модели. Убедитесь, что директория с моделью существует
-MODEL_PATH = 'vosk-model-small-ru-0.22'  # или './vosk-model-small-ru-0.22'
-SAMPLE_RATE = 16000
 
-# Проверка модели
+
+
 if not os.path.exists(MODEL_PATH):
     print("Ошибка: путь к модели не найден:", MODEL_PATH)
     sys.exit(1)
-
-# Загружаем модель Vosk
 model = vosk.Model(MODEL_PATH)
 
 app = FastAPI()
 
-# При желании можно отдать простую HTML-страницу для теста:
-@app.get("/")
-def get_root():
-    # HTML для простого теста WebSocket в браузере
-    return HTMLResponse(
-        """
-        <html>
-            <head>
-                <title>WebSocket Test</title>
-            </head>
-            <body>
-                <h1>WebSocket Russian ASR Test</h1>
-                <button onclick="start()">Start</button>
-                <script>
-                    let ws;
-                    function start(){
-                        ws = new WebSocket("ws://" + window.location.host + "/ws/transcribe");
-                        ws.onopen = () => {
-                            console.log("WebSocket open");
-                            // Для примера сразу закрываем, чтобы увидеть ответ
-                            ws.send("Примерный текст или аудиоданные");
-                        }
-                        ws.onmessage = (event) => {
-                            console.log("Server says:", event.data);
-                        }
-                    }
-                </script>
-            </body>
-        </html>
-        """
-    )
+
+
 
 @app.websocket("/ws/transcribe")
 async def transcribe_audio(websocket: WebSocket):
@@ -84,3 +54,7 @@ async def transcribe_audio(websocket: WebSocket):
 
     finally:
         await websocket.close()
+
+
+if __name__ == "__main__":
+    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=False)

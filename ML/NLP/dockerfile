@@ -1,0 +1,13 @@
+FROM python:3.10
+WORKDIR /app
+
+COPY server.py config.py requirements.txt /app/
+COPY vosk-model-small-ru-0.22 /app/vosk-model-small-ru-0.22
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+EXPOSE 8000
+
+
+CMD ["python", "server.py"]
