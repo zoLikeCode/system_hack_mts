@@ -1,1 +1,4 @@
 .env*
+.venv*
+ML/NLP/vosk-model-small-ru-0.22/
+ML/NLP/tests/
