@@ -8,6 +8,9 @@ from fastapi.responses import HTMLResponse
 from config import MODEL_PATH, SAMPLE_RATE
 import uvicorn
 
+from langserve import add_routes
+from agent import graph
+
 # Путь к модели. Убедитесь, что директория с моделью существует
 
 
@@ -19,6 +22,13 @@ model = vosk.Model(MODEL_PATH)
 
 app = FastAPI()
 
+
+
+add_routes(
+    app,
+    graph,
+    path="/graph",
+)
 
 
 

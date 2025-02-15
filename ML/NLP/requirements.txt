@@ -1,3 +1,11 @@
 async-fastapi-jwt-auth==0.6.6
 vosk==0.3.45
 uvicorn==0.34.0
+langchain==0.3.18
+langgraph==0.2.72
+langserve==0.3.1
+langsmith==0.3.8
+langchain_mistralai==0.2.6
+langchain_core==0.3.35
+langchain_community==0.3.17
+sse_starlette==1.8.2
