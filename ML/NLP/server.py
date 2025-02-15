@@ -2,11 +2,11 @@ import os
 import sys
 import json
 import vosk
+import uvicorn
 
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 from config import MODEL_PATH, SAMPLE_RATE
-import uvicorn
 
 # Путь к модели. Убедитесь, что директория с моделью существует
 
@@ -42,18 +42,15 @@ async def transcribe_audio(websocket: WebSocket):
                 # Если распознали целую фразу
                 result_text = json.loads(rec.Result())
                 # Отправляем финальный результат
-                await websocket.send_text("Сказал: " + result_text["text"])
+                await websocket.send_text(result_text["text"] + ' 1')
             else:
                 # Промежуточные результаты
                 partial_text = json.loads(rec.PartialResult())
                 # Можно отправлять промежуточные варианты
-                await websocket.send_text("Промежуточно: " + partial_text["partial"])
+                await websocket.send_text(partial_text["partial"] + ' 0')
 
     except Exception as e:
         print("Ошибка при обработке аудиопотока:", e)
-
-    finally:
-        await websocket.close()
 
 
 if __name__ == "__main__":
