@@ -1,0 +1,32 @@
+services:
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend:/app
+    ports:
+      - '3000:3000'
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 4096M
+    restart: always
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: mts_user
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: mts_db
+    volumes:
+      - pg_data:/var/lib/postgresql/data 
+    ports:
+      - '5432:5432'
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 4096M
+    restart: always
+    
+volumes:
+  pg_data:
