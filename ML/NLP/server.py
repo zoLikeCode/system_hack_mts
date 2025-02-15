@@ -7,6 +7,7 @@ import uvicorn
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 from config import MODEL_PATH, SAMPLE_RATE
+from fastapi.middleware.cors import CORSMiddleware
 
 from langserve import add_routes
 from agent import graph
@@ -22,7 +23,13 @@ model = vosk.Model(MODEL_PATH)
 
 app = FastAPI()
 
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 add_routes(
     app,
