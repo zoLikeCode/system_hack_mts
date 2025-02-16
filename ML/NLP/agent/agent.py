@@ -23,6 +23,7 @@ import json
 
 load_dotenv('../.env')
 API_KEY = os.getenv('API_KEY')
+API_KEY = 'aj3ozp7g0tZaWyvbmP8pHPrNGRgfJN7d'
 
 class State(TypedDict):
     messages: Annotated[list, add_messages]
@@ -43,10 +44,7 @@ def write_json_file(file_path: str, data: dict) -> None:
     with open(file_path, 'w', encoding='utf-8') as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
 
-if os.path.isfile("json/status_pass.json"):
-    print("Файл существует.")
-else:
-    print("Файл не найден.")
+
 
 status_pass = read_json_file("agent/json/status_pass.json")
 plumbers_requests = read_json_file('agent/json/plumbers_requests.json')
