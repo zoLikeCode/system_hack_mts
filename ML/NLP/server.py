@@ -13,7 +13,7 @@ from config import MODEL_PATH, SAMPLE_RATE
 from fastapi.middleware.cors import CORSMiddleware
 
 from langserve import add_routes
-from agent import graph
+from agent.agent import graph
 import asyncio
 
 WS_URL = "ws://localhost:8000/ws/transcribe"
@@ -88,10 +88,11 @@ async def video_endpoint(websocket: WebSocket):
         # Открываем видеофайл в бинарном режиме
         with open("video.mp4", "rb") as video_file:
             while True:
-                chunk = video_file.read(4000)  # читаем чанками по 4КБ (можно настроить размер)
+                chunk = video_file.read(4096)  # читаем чанками по 4КБ (можно настроить размер)
                 if not chunk:
                     break
                 # Отправляем бинарные данные через WebSocket
+                print(chunk)
                 await websocket.send_bytes(chunk)
                 # Добавляем небольшую задержку, если необходимо контролировать скорость передачи
                 await asyncio.sleep(0.01)
