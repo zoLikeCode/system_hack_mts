@@ -7,7 +7,7 @@ COPY hls_content/ /app/hls_content/
 COPY vosk-model-small-ru-0.22/ /app/vosk-model-small-ru-0.22/
 
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3.10 install --no-cache-dir -r requirements.txt
 
 
 EXPOSE 8000
