@@ -1,4 +1,4 @@
-![Image alt](https://gitlab.com/misis_go/system_hack_mts/-/blob/main/mtstruetech.png?ref_type=heads)
+![Image alt](https://github.com/zoLikeCode/system_hack_mts/raw/main/mtstruetech.png)
 
 ---
 ### Содержание / навигация:
@@ -65,6 +65,6 @@
 
 ### Демонстрация работы проекта:
 
-1. [Видео]()
+1. [Видео](https://drive.google.com/file/d/1Uf4-ppLtdr9UY12wVzf7-VD2woBvMcDD/view?usp=sharing)
 2. [Презентация]()
 
