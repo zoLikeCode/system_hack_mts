@@ -13,4 +13,4 @@ RUN python3.10 -m pip install --break-system-packages --no-cache-dir -r requirem
 EXPOSE 8000
 
 
-CMD ["python", "server.py"]
+CMD ["python3.10", "server.py"]
