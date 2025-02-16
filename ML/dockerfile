@@ -7,7 +7,7 @@ COPY hls_content/ /app/hls_content/
 COPY vosk-model-small-ru-0.22/ /app/vosk-model-small-ru-0.22/
 
 
-RUN python3 -m pip install --break-system-packages -r requirements.txt
+RUN RUN python3 -m pip install --break-system-packages --no-cache-dir -r requirements.txt --index-url https://mirrors.aliyun.com/pypi/simple
 
 
 EXPOSE 8000
