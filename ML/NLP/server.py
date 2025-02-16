@@ -4,7 +4,7 @@ import json
 import vosk
 import uvicorn
 import wave
-from pydub import AudioSegment
+#from pydub import AudioSegment
 import websockets
 
 from fastapi import FastAPI, WebSocket
@@ -13,7 +13,7 @@ from config import MODEL_PATH, SAMPLE_RATE
 from fastapi.middleware.cors import CORSMiddleware
 
 from langserve import add_routes
-from agent import graph
+from agent.agent import graph
 import asyncio
 
 WS_URL = "ws://localhost:8000/ws/transcribe"

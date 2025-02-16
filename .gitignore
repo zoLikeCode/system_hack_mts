@@ -1,3 +1,4 @@
 .env*
 .venv*
 ML/NLP/tests/
+ML/NLP/agent/llm.ipynb
