@@ -5,7 +5,7 @@ COPY server.py config.py requirements.txt /app/
 COPY agent/ /app/agent/
 COPY vosk-model-small-ru-0.22 /app/vosk-model-small-ru-0.22
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt --index-url https://pypi.org/simple
 
 
 EXPOSE 8000
