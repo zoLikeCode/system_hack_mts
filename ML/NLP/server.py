@@ -7,10 +7,11 @@ import wave
 from pydub import AudioSegment
 import websockets
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Response, WebSocket, WebSocketDisconnect
+from fastapi.responses import FileResponse, HTMLResponse
 from config import MODEL_PATH, SAMPLE_RATE
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from langserve import add_routes
 from agent.agent import graph
@@ -41,6 +42,9 @@ add_routes(
     graph,
     path="/graph",
 )
+
+app.mount('/hls', StaticFiles(directory='hls_content'), name='hls')
+
 
 @app.get('/test')
 async def test():
@@ -80,30 +84,6 @@ async def transcribe_audio(websocket: WebSocket):
     except Exception as e:
         print("Ошибка при обработке аудиопотока:", e)
 
-
-@app.websocket("/ws/video")
-async def video_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    try:
-        # Открываем видеофайл в бинарном режиме
-        with open("video.mp4", "rb") as video_file:
-            while True:
-                chunk = video_file.read(4000)  # читаем чанками по 4КБ (можно настроить размер)
-                if not chunk:
-                    break
-                # Отправляем бинарные данные через WebSocket
-                print(chunk)
-                await websocket.send_bytes(chunk)
-                # Добавляем небольшую задержку, если необходимо контролировать скорость передачи
-                await asyncio.sleep(1)
-        # После отправки всех чанков можно отправить специальное сообщение, сигнализирующее об окончании потока
-        await websocket.send_text("EOF")
-    except WebSocketDisconnect:
-        print("Клиент отключился")
-    except Exception as e:
-        print("Ошибка при передаче видео:", e)
-    finally:
-        await websocket.close()
 
 
 def convert_mp3_to_wav(mp3_path, wav_path):
