@@ -23,7 +23,7 @@
 
 **Back:**
 1. Перейдите на сайт [https://console.mistral.ai](https://console.mistral.ai) и получите свой API ключ.
-2. В папке [`ML/NLP/`](ML/) создайте файл `.env` на основе примера [`.env.example`](ML/.env.example)
+2. В папке [`ML/NLP/agent`](ML/NLP/agent/) создайте файл `.env` на основе примера [`.env.example`](ML/.env.example)
 3. После настройки `.env` файла выполните команду для сборки и запуска проекта:
 
    ```bash

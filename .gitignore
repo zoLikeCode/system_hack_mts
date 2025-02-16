@@ -1,3 +1,4 @@
 
 .venv*
-ML/.env
+ML/agent/.env
+ML/agent/llm.ipynb

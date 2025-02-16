@@ -21,9 +21,9 @@ import json
 
 
 
-load_dotenv('../.env')
+load_dotenv('.env')
 API_KEY = os.getenv('API_KEY')
-API_KEY = 'aj3ozp7g0tZaWyvbmP8pHPrNGRgfJN7d'
+#API_KEY = 'aj3ozp7g0tZaWyvbmP8pHPrNGRgfJN7d'
 
 class State(TypedDict):
     messages: Annotated[list, add_messages]
