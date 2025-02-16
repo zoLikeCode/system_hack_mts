@@ -4,7 +4,6 @@ import json
 import vosk
 import uvicorn
 import wave
-from pydub import AudioSegment
 import websockets
 
 from fastapi import FastAPI, Response
@@ -17,7 +16,7 @@ from langserve import add_routes
 from agent.agent import graph
 import asyncio
 
-# Путь к модели. Убедитесь, что директория с моделью существует
+#Путь к модели. Убедитесь, что директория с моделью существует
 
 if not os.path.exists(MODEL_PATH):
     print("Ошибка: путь к модели не найден:", MODEL_PATH)
@@ -66,4 +65,7 @@ async def transcribe_audio():
     return parsed_data
 
 
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
                 
