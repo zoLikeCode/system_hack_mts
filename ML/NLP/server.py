@@ -3,6 +3,9 @@ import sys
 import json
 import vosk
 import uvicorn
+import wave
+from pydub import AudioSegment
+import websockets
 
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
@@ -11,10 +14,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from langserve import add_routes
 from agent import graph
+import asyncio
+
+WS_URL = "ws://localhost:8000/ws/transcribe"
+MP3_FILE_PATH = "audio.mp3"
 
 # Путь к модели. Убедитесь, что директория с моделью существует
-
-
 
 if not os.path.exists(MODEL_PATH):
     print("Ошибка: путь к модели не найден:", MODEL_PATH)
@@ -37,7 +42,13 @@ add_routes(
     path="/graph",
 )
 
+@app.get('/test')
+async def test():
+    return 'Test is good'
 
+@app.get('/test_client')
+def test_client():
+    asyncio.run(send_audio())
 
 @app.websocket("/ws/transcribe")
 async def transcribe_audio(websocket: WebSocket):
@@ -59,16 +70,42 @@ async def transcribe_audio(websocket: WebSocket):
                 # Если распознали целую фразу
                 result_text = json.loads(rec.Result())
                 # Отправляем финальный результат
-                await websocket.send_text(result_text["text"] + ' 1')
+                await websocket.send_text(result_text["text"])
             else:
                 # Промежуточные результаты
                 partial_text = json.loads(rec.PartialResult())
                 # Можно отправлять промежуточные варианты
-                await websocket.send_text(partial_text["partial"] + ' 0')
+                await websocket.send_text(partial_text["partial"])
 
     except Exception as e:
         print("Ошибка при обработке аудиопотока:", e)
 
+
+def convert_mp3_to_wav(mp3_path, wav_path):
+    audio = AudioSegment.from_mp3(mp3_path)
+    audio = audio.set_channels(1).set_frame_rate(16000)  # Vosk ожидает моно 16kHz
+    audio.export(wav_path, format="wav")
+
+
+async def send_audio():
+    WAV_FILE_PATH = "converted_audio.wav"
+    convert_mp3_to_wav(MP3_FILE_PATH, WAV_FILE_PATH)
+
+    with wave.open(WAV_FILE_PATH, "rb") as wf:
+        async with websockets.connect(WS_URL) as websocket:
+            print("Подключение к WebSocket...")
+            chunk_size = 4000  # Размер фрагмента (примерно 0.25 секунды)
+
+            while True:
+                chunk = wf.readframes(chunk_size)
+                if not chunk:
+                    break  
+
+                await websocket.send(chunk)  
+                response = await websocket.recv()
+                print("Сервер:", response)
+
+            print("Аудио отправлено, закрываем соединение.")
 
 if __name__ == "__main__":
     uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=False)
