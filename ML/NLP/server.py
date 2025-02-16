@@ -88,14 +88,14 @@ async def video_endpoint(websocket: WebSocket):
         # Открываем видеофайл в бинарном режиме
         with open("video.mp4", "rb") as video_file:
             while True:
-                chunk = video_file.read(4096)  # читаем чанками по 4КБ (можно настроить размер)
+                chunk = video_file.read(8000)  # читаем чанками по 4КБ (можно настроить размер)
                 if not chunk:
                     break
                 # Отправляем бинарные данные через WebSocket
                 print(chunk)
                 await websocket.send_bytes(chunk)
                 # Добавляем небольшую задержку, если необходимо контролировать скорость передачи
-                await asyncio.sleep(0.01)
+                await asyncio.sleep(0.2)
         # После отправки всех чанков можно отправить специальное сообщение, сигнализирующее об окончании потока
         await websocket.send_text("EOF")
     except WebSocketDisconnect:
