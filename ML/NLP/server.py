@@ -4,16 +4,16 @@ import json
 import vosk
 import uvicorn
 import wave
-#from pydub import AudioSegment
+from pydub import AudioSegment
 import websockets
 
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from config import MODEL_PATH, SAMPLE_RATE
 from fastapi.middleware.cors import CORSMiddleware
 
 from langserve import add_routes
-from agent.agent import graph
+from agent import graph
 import asyncio
 
 WS_URL = "ws://localhost:8000/ws/transcribe"
@@ -70,15 +70,39 @@ async def transcribe_audio(websocket: WebSocket):
                 # Если распознали целую фразу
                 result_text = json.loads(rec.Result())
                 # Отправляем финальный результат
-                await websocket.send_text(result_text["text"])
+                await websocket.send_text(result_text["text"] + ' 1')
             else:
                 # Промежуточные результаты
                 partial_text = json.loads(rec.PartialResult())
                 # Можно отправлять промежуточные варианты
-                await websocket.send_text(partial_text["partial"])
+                await websocket.send_text(partial_text["partial"] + ' 0')
 
     except Exception as e:
         print("Ошибка при обработке аудиопотока:", e)
+
+
+@app.websocket("/ws/video")
+async def video_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        # Открываем видеофайл в бинарном режиме
+        with open("video.mp4", "rb") as video_file:
+            while True:
+                chunk = video_file.read(4000)  # читаем чанками по 4КБ (можно настроить размер)
+                if not chunk:
+                    break
+                # Отправляем бинарные данные через WebSocket
+                await websocket.send_bytes(chunk)
+                # Добавляем небольшую задержку, если необходимо контролировать скорость передачи
+                await asyncio.sleep(0.01)
+        # После отправки всех чанков можно отправить специальное сообщение, сигнализирующее об окончании потока
+        await websocket.send_text("EOF")
+    except WebSocketDisconnect:
+        print("Клиент отключился")
+    except Exception as e:
+        print("Ошибка при передаче видео:", e)
+    finally:
+        await websocket.close()
 
 
 def convert_mp3_to_wav(mp3_path, wav_path):
