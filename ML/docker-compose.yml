@@ -8,3 +8,5 @@ services:
     env_file:
       - agent/.env
     restart: always
+    network_mode: "host"
+
