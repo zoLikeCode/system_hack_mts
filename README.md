@@ -75,5 +75,5 @@
 ### Демонстрация работы проекта:
 
 1. [Видео](https://drive.google.com/file/d/1Uf4-ppLtdr9UY12wVzf7-VD2woBvMcDD/view?usp=sharing)
-2. [Презентация](https://github.com/zoLikeCode/system_hack_mts/raw/main/MISIS GO MTC True Tech Compress.pptx)
+2. [Презентация](https://github.com/zoLikeCode/system_hack_mts/raw/main/MISIS_GO_MTC_True_Tech_Compress.pptx)
 
